@@ -2,6 +2,32 @@ from django.views.generic import ListView, DetailView, CreateView
 from django.urls import reverse_lazy
 from .models import Blog, Review, Comment
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render, redirect
+from django.contrib.auth import login
+from django.contrib.auth.views import LoginView
+from django.contrib import messages
+
+
+# Registrar usuario
+def register(request):
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect("blogapp:blog_list")
+    else:
+        form = UserCreationForm()
+    return render(request, "registration/register.html", {"form": form})
+
+# Mensaje de credenciales incorrectas
+class CustomLoginView(LoginView):
+    template_name = 'registration/login.html'
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Usuario o contraseña incorrectos.")
+        return super().form_invalid(form)
 
 class BlogListView(ListView):
     model = Blog
