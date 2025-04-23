@@ -4,7 +4,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog and Reviews</title>
+    <title>BlogSpace</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -46,6 +46,7 @@
         transition: box-shadow 0.3s ease;
       }
     </style>
+  {% block extra_head %}{% endblock %}
   </head>
 
   <body id="body" class="flex flex-col min-h-screen bg-white dark:bg-black text-gray-900 dark:text-white font-sans transition-all duration-700 ease-in-out">
