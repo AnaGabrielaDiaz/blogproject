@@ -7,7 +7,20 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from django.contrib.auth.views import LoginView
 from django.contrib import messages
+from django.views.generic import UpdateView
+from django.contrib.auth.mixins import UserPassesTestMixin
 
+class BlogUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Blog
+    fields = ['title', 'content', 'featured_image']
+    template_name = 'blog_form.html'
+
+    def get_success_url(self):
+        return reverse_lazy('blogapp:blog_detail', kwargs={'pk': self.object.pk})
+
+    def test_func(self):
+        blog = self.get_object()
+        return self.request.user == blog.author
 
 # Registrar usuario
 def register(request):

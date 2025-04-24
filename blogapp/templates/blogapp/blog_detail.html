@@ -10,6 +10,12 @@
     <div class="prose dark:prose-invert max-w-none mb-4">{{ object.content|safe }}</div>
     
     <p class="text-sm text-gray-600 dark:text-gray-500">By {{ object.author.username }} - {{ object.created_at }}</p>
+    
+    {% if user == object.author %}
+      <a href="{% url 'blogapp:edit_blog' object.pk %}" class="inline-block mt-3 bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded transition-colors">
+        Editar Blog
+      </a>
+    {% endif %}
   </article>
 
   <section class="mt-8">

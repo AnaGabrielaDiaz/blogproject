@@ -13,4 +13,5 @@ urlpatterns = [
     path('blog/<int:blog_pk>/review/<int:review_pk>/comment/', CommentCreateView.as_view(), name='add_comment'),
     path("register/", views.register, name="register"),
     path('login/', CustomLoginView.as_view(), name='login'),
+    path('blog/<int:pk>/edit/', views.BlogUpdateView.as_view(), name='edit_blog'),
 ]
