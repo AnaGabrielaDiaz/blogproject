@@ -7,7 +7,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from django.contrib.auth.views import LoginView
 from django.contrib import messages
-
+from django.core.exceptions import ValidationError
+from django.db.models import Avg
 
 # Registrar usuario
 def register(request):
@@ -29,14 +30,26 @@ class CustomLoginView(LoginView):
         messages.error(self.request, "Usuario o contraseña incorrectos.")
         return super().form_invalid(form)
 
+
 class BlogListView(ListView):
     model = Blog
     template_name = 'blogapp/blog_list.html'
+
+    # Promedio de reseñas en la lista de blogs
+    def get_queryset(self):
+        return Blog.objects.annotate(promedio_rating=Avg('reviews__rating'))
 
 
 class BlogDetailView(DetailView):
     model = Blog
     template_name = 'blogapp/blog_detail.html'
+
+    # Cálculo de promedio de reseñas
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        promedio = self.object.reviews.aggregate(promedio=Avg('rating'))['promedio']
+        context['promedio_rating'] = round(promedio, 2) if promedio else None
+        return context
 
 
 class BlogCreateView(LoginRequiredMixin, CreateView):
@@ -52,11 +65,17 @@ class BlogCreateView(LoginRequiredMixin, CreateView):
         return reverse_lazy('blogapp:blog_detail', kwargs={'pk': self.object.pk})
 
 
-
 class ReviewCreateView(CreateView):
     model = Review
     fields = ['rating', 'comment']
     template_name = 'blogapp/review_form.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        blog_id = self.kwargs['pk']
+        if Review.objects.filter(blog_id=blog_id, reviewer=request.user).exists():
+            messages.warning(request, "Ya has dejado una reseña para este blog.")
+            return redirect('blogapp:blog_detail', pk=blog_id)
+        return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
         form.instance.reviewer = self.request.user
