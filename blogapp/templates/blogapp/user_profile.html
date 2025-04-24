@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+  <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-lg dark:text-white text-gray-900">
+    <h1 class="text-3xl font-bold mb-4">Perfil de {{ request.user.username }}</h1>
+
+    <div class="mb-6 space-y-1">
+      <p class="text-gray-600 dark:text-gray-400"><strong>Email:</strong> {{ request.user.email|default:"No especificado" }}</p>
+      <p class="text-gray-600 dark:text-gray-400"><strong>Miembro desde:</strong> {{ request.user.date_joined|date:"d M Y" }}</p>
+    </div>
+
+    <div class="flex space-x-4 mb-8">
+      <a href="{% url 'blogapp:add_blog' %}" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition">➕ Nuevo Blog</a>
+      <a href="/accounts/password_change/" class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg shadow-md transition">🔐 Cambiar Contraseña</a>
+    </div>
+
+    <h2 class="text-2xl font-semibold mb-4">Mis Blogs</h2>
+
+    {% if user_blogs %}
+      <ul class="space-y-4">
+        {% for blog in user_blogs %}
+          <li class="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg shadow hover:shadow-md transition flex justify-between items-center">
+            <div>
+              <a href="{% url 'blogapp:blog_detail' blog.pk %}" class="text-xl font-semibold text-blue-600 dark:text-blue-400 hover:underline">
+                {{ blog.title }}
+              </a>
+              <p class="text-sm text-gray-500 dark:text-gray-400">Publicado el {{ blog.created_at|date:"d M Y" }}</p>
+            </div>
+
+            <div class="flex space-x-2">
+              <a href="{% url 'blogapp:edit_blog' blog.pk %}" class="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm shadow" title="Editar">
+                ✏️
+              </a>
+              <form action="{% url 'blogapp:delete_blog' blog.pk %}" method="post" onsubmit="return confirm('¿Estás seguro que deseas eliminar este blog?');">
+                {% csrf_token %}
+                <button type="submit" class="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm shadow" title="Eliminar">
+                  🗑️
+                </button>
+              </form>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="text-gray-500">No has creado ningún blog todavía.</p>
+    {% endif %}
+  </div>
+{% endblock %}
+
