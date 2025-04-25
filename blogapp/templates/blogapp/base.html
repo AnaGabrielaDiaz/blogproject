@@ -53,6 +53,19 @@
 </head>
 
   <body id="body" class="flex flex-col min-h-screen bg-white dark:bg-black text-gray-900 dark:text-white font-sans transition-all duration-700 ease-in-out">
+    {% if messages %}
+      <div class="fixed top-4 right-4 z-50 space-y-2 w-full max-w-sm">
+        {% for message in messages %}
+          <div class="px-4 py-3 rounded shadow text-white animate-fade-in transition-all
+                      {% if message.tags == 'error' %}bg-red-600
+                      {% elif message.tags == 'warning' %}bg-yellow-500 text-gray-900
+                      {% elif message.tags == 'success' %}bg-green-600
+                      {% else %}bg-blue-600{% endif %}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
     <nav class="bg-skyblue dark:bg-gradient-to-r dark:from-gray-900 dark:to-gray-700 shadow-md py-4 px-6 transition-colors">
       <div class="max-w-6xl mx-auto flex justify-between items-center">
         <a href="{% url 'blogapp:blog_list' %}"

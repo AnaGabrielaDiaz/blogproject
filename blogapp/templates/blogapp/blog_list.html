@@ -3,42 +3,50 @@
   <h1 class="text-3xl font-bold mb-6 text-center text-gray-900 dark:text-white">Lista de blogs</h1>
   <div class="grid gap-6">
     {% for blog in object_list %}
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 hover:shadow-xl transition-all duration-700 ease-in-out dark:text-white text-gray-900 animate-fade-in flex justify-between items-center gap-6">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 hover:shadow-xl transition-all duration-700 ease-in-out dark:text-white text-gray-900 animate-fade-in">
       
-      <div class="flex-1">
-        <h2 class="text-xl font-semibold mb-1">
-          <a href="{% url 'blogapp:blog_detail' blog.pk %}" class="text-blue-400 hover:text-blue-300">{{ blog.title }}</a>
-        </h2>
-        <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
-          by {{ blog.author.username }} - {{ blog.created_at }}
-        </p>
-        <p class="text-gray-700 dark:text-gray-300 text-sm mb-1">
-          {{ blog.content|striptags|truncatechars:180 }}...
-        </p>
-        <a href="{% url 'blogapp:blog_detail' blog.pk %}" class="text-blue-500 dark:text-blue-300 hover:underline text-sm">Leer más</a>
-        {% if blog.promedio_rating %}
-          {% with blog.promedio_rating|floatformat:1 as promedio %}
-            {% with blog.promedio_rating|floatformat:0 as promedio_entero %}
-              <div class="flex items-center gap-1 mt-2">
-                {% for i in "12345" %}
-                  {% if forloop.counter <= promedio_entero|add:"0" %}
-                    <span class="text-yellow-400 text-lg">★</span>
-                  {% else %}
-                    <span class="text-gray-300 dark:text-gray-600 text-lg">☆</span>
-                  {% endif %}
-                {% endfor %}
-                <span class="ml-1 text-sm text-gray-700 dark:text-gray-300">{{ promedio }}/5</span>
-              </div>
+      <div class="flex items-start gap-4">
+        <div class="flex-1">
+          <h2 class="text-xl font-semibold mb-1">
+            <a href="{% url 'blogapp:blog_detail' blog.pk %}" class="text-blue-400 hover:text-blue-300">{{ blog.title }}</a>
+          </h2>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+            by {{ blog.author.username }} - {{ blog.created_at }}
+          </p>
+          <p class="text-gray-700 dark:text-gray-300 text-sm mb-1">
+            {{ blog.content|striptags|truncatechars:180 }}...
+          </p>
+          <a href="{% url 'blogapp:blog_detail' blog.pk %}" class="text-blue-500 dark:text-blue-300 hover:underline text-sm">Leer más</a>
+          <!-- Promedio de reseñas -->
+          {% if blog.promedio_rating %}
+            {% with blog.promedio_rating|floatformat:1 as promedio %}
+              {% with blog.promedio_rating|floatformat:0 as promedio_entero %}
+                <div class="flex items-center gap-1 mt-2">
+                  {% for i in "12345" %}
+                    {% if forloop.counter <= promedio_entero|add:"0" %}
+                      <span class="text-yellow-400 text-lg">★</span>
+                    {% else %}
+                      <span class="text-gray-300 dark:text-gray-600 text-lg">☆</span>
+                    {% endif %}
+                  {% endfor %}
+                  <span class="ml-1 text-sm text-gray-700 dark:text-gray-300">{{ promedio }}/5</span>
+                </div>
+              {% endwith %}
             {% endwith %}
-          {% endwith %}
-        {% else %}
-          <p class="text-sm text-gray-400 dark:text-gray-500 mt-2">Sin reseñas aún</p>
+          {% else %}
+            <p class="text-sm text-gray-400 dark:text-gray-500 mt-2">Sin reseñas aún</p>
+          {% endif %}
+        </div>
+        <!-- Imagen del blog -->
+        {% if blog.featured_image %}
+          <img src="{{ blog.featured_image.url }}" alt="Miniatura"
+               class="w-32 h-24 object-cover rounded-md shadow border border-gray-700">
         {% endif %}
-
       </div>
+    </div>
     {% empty %}
-      <p class="text-gray-500 dark:text-gray-400 text-center">No se ha publicado nungún blog.</p>
-    
+      <p class="text-gray-500 dark:text-gray-400 text-center">No se ha publicado ningún blog.</p>
     {% endfor %}
   </div>
 {% endblock %}
+

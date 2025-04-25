@@ -14,6 +14,7 @@ from django.views.generic import TemplateView
 from django.views.generic.edit import DeleteView
 from django.urls import reverse_lazy
 from .models import Blog
+from django.core.exceptions import ValidationError
 
 class BlogDeleteView(DeleteView):
     model = Blog
@@ -38,7 +39,7 @@ class BlogUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def test_func(self):
         blog = self.get_object()
-        return self.request.user == blog.authorfrom django.core.exceptions import ValidationError
+        return self.request.user == blog.author
 from django.db.models import Avg
 
 # Registrar usuario
