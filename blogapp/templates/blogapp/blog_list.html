@@ -1,13 +1,21 @@
 {% extends 'base.html' %}
 {% block content %}
-  <h1 class="text-3xl font-bold mb-6 text-center text-gray-900 dark:text-white">Todos los</h1>
+  <h1 class="text-3xl font-bold mb-6 text-center text-gray-900 dark:text-white">Lista de blogs</h1>
   <div class="grid gap-6">
     {% for blog in object_list %}
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 hover:shadow-xl transition-all duration-700 ease-in-out dark:text-white text-gray-900 animate-fade-in">
-        <h2 class="text-xl font-semibold mb-2">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 hover:shadow-xl transition-all duration-700 ease-in-out dark:text-white text-gray-900 animate-fade-in flex justify-between items-center gap-6">
+      
+      <div class="flex-1">
+        <h2 class="text-xl font-semibold mb-1">
           <a href="{% url 'blogapp:blog_detail' blog.pk %}" class="text-blue-400 hover:text-blue-300">{{ blog.title }}</a>
         </h2>
-        <p class="text-sm text-gray-500 dark:text-gray-400">by {{ blog.author.username }} - {{ blog.created_at }}</p>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+          by {{ blog.author.username }} - {{ blog.created_at }}
+        </p>
+        <p class="text-gray-700 dark:text-gray-300 text-sm mb-1">
+          {{ blog.content|striptags|truncatechars:180 }}...
+        </p>
+        <a href="{% url 'blogapp:blog_detail' blog.pk %}" class="text-blue-500 dark:text-blue-300 hover:underline text-sm">Leer más</a>
         {% if blog.promedio_rating %}
           {% with blog.promedio_rating|floatformat:1 as promedio %}
             {% with blog.promedio_rating|floatformat:0 as promedio_entero %}
@@ -30,6 +38,7 @@
       </div>
     {% empty %}
       <p class="text-gray-500 dark:text-gray-400 text-center">No se ha publicado nungún blog.</p>
+    
     {% endfor %}
   </div>
 {% endblock %}

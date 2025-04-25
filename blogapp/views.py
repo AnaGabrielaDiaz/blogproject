@@ -7,7 +7,38 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from django.contrib.auth.views import LoginView
 from django.contrib import messages
-from django.core.exceptions import ValidationError
+from django.views.generic import UpdateView
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import TemplateView
+from django.views.generic.edit import DeleteView
+from django.urls import reverse_lazy
+from .models import Blog
+
+class BlogDeleteView(DeleteView):
+    model = Blog
+    template_name = 'blogapp/blog_confirm_delete.html'
+    success_url = reverse_lazy('blogapp:user_profile')
+
+class UserProfileView(LoginRequiredMixin, TemplateView):
+    template_name = 'blogapp/user_profile.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['user_blogs'] = Blog.objects.filter(author=self.request.user)
+        return context
+
+class BlogUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Blog
+    fields = ['title', 'content', 'featured_image']
+    template_name = 'blog_form.html'
+
+    def get_success_url(self):
+        return reverse_lazy('blogapp:blog_detail', kwargs={'pk': self.object.pk})
+
+    def test_func(self):
+        blog = self.get_object()
+        return self.request.user == blog.authorfrom django.core.exceptions import ValidationError
 from django.db.models import Avg
 
 # Registrar usuario
@@ -54,7 +85,7 @@ class BlogDetailView(DetailView):
 
 class BlogCreateView(LoginRequiredMixin, CreateView):
     model = Blog
-    fields = ['title', 'content']
+    fields = ['title', 'content', 'featured_image']
     template_name = 'blog_form.html'
 
     def form_valid(self, form):
