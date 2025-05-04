@@ -3,9 +3,17 @@ from django.urls import reverse_lazy
 from .models import Blog, Review, Comment
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+
+# Margarita
+
+from django.views.generic import ListView
+from .models import Blog
+
 class BlogListView(ListView):
     model = Blog
-    template_name = 'blogapp/blog_list.html'
+    template_name = 'blogapp/blog_list.html'  # Asegúrate que el archivo está en blogapp/templates/blogapp/blog_list.html
+    context_object_name = 'object_list'
+    paginate_by = 3  # Cambia aquí a 3 como quieres
 
 
 class BlogDetailView(DetailView):
