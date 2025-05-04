@@ -29,10 +29,16 @@ class CustomLoginView(LoginView):
         messages.error(self.request, "Usuario o contraseña incorrectos.")
         return super().form_invalid(form)
 
+# PAGINACION
+
+from django.views.generic import ListView
+from .models import Blog
+
 class BlogListView(ListView):
     model = Blog
-    template_name = 'blogapp/blog_list.html'
-
+    template_name = 'blogapp/blog_list.html'  # Asegúrate que el archivo está en blogapp/templates/blogapp/blog_list.html
+    context_object_name = 'object_list'
+    paginate_by = 3  # Cambia aquí a 3 como quieres
 
 class BlogDetailView(DetailView):
     model = Blog
