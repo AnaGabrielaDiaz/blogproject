@@ -13,7 +13,7 @@ class BlogListView(ListView):
     model = Blog
     template_name = 'blogapp/blog_list.html'  # Asegúrate que el archivo está en blogapp/templates/blogapp/blog_list.html
     context_object_name = 'object_list'
-    paginate_by = 3  # Cambia aquí a 3 como quieres
+    paginate_by = 3  # Cambia aquí a 3 como quiera
 
 
 class BlogDetailView(DetailView):
