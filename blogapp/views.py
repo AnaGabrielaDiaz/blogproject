@@ -13,7 +13,19 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView
 from django.views.generic.edit import DeleteView
 from django.urls import reverse_lazy
-from .models import Blog
+from .models import Blog, Category
+from django import forms
+
+class BlogForm(forms.ModelForm):
+    class Meta:
+        model = Blog
+        fields = ['title', 'content', 'featured_image', 'category']
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'content': forms.Textarea(attrs={'class': 'form-control'}),
+            'featured_image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+            'category': forms.Select(attrs={'class': 'form-control'}),
+        }
 
 class BlogDeleteView(DeleteView):
     model = Blog
@@ -30,15 +42,25 @@ class UserProfileView(LoginRequiredMixin, TemplateView):
 
 class BlogUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Blog
-    fields = ['title', 'content', 'featured_image']
-    template_name = 'blog_form.html'
+    form_class = BlogForm
+    template_name = 'blogapp/blog_form.html'
+
+    def form_valid(self, form):
+        return super().form_valid(form)
 
     def get_success_url(self):
         return reverse_lazy('blogapp:blog_detail', kwargs={'pk': self.object.pk})
 
     def test_func(self):
+        # Solo el autor puede editar
         blog = self.get_object()
         return self.request.user == blog.author
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Paso todas las categorías para poblar el <select>
+        context['categories'] = Category.objects.all()
+        return context
 
 # Registrar usuario
 def register(request):
@@ -64,6 +86,17 @@ class BlogListView(ListView):
     model = Blog
     template_name = 'blogapp/blog_list.html'
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        category_id = self.request.GET.get('category')
+        if category_id:
+            queryset = queryset.filter(category_id=category_id)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.all()
+        return context
 
 class BlogDetailView(DetailView):
     model = Blog
@@ -72,8 +105,8 @@ class BlogDetailView(DetailView):
 
 class BlogCreateView(LoginRequiredMixin, CreateView):
     model = Blog
-    fields = ['title', 'content', 'featured_image']
-    template_name = 'blog_form.html'
+    form_class = BlogForm
+    template_name = 'blogapp/blog_form.html'
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -82,6 +115,12 @@ class BlogCreateView(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         return reverse_lazy('blogapp:blog_detail', kwargs={'pk': self.object.pk})
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Paso todas las categorías para poblar el <select>
+        context['categories'] = Category.objects.all()
+        return context
+    
 
 
 class ReviewCreateView(CreateView):
