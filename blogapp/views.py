@@ -62,11 +62,16 @@ class CustomLoginView(LoginView):
         messages.error(self.request, "Usuario o contraseña incorrectos.")
         return super().form_invalid(form)
 
+# PAGINACION
+
+from django.views.generic import ListView
+from .models import Blog
 
 class BlogListView(ListView):
     model = Blog
     template_name = 'blogapp/blog_list.html'
-
+    context_object_name = 'object_list'
+    paginate_by = 3  # Cantidad de blogs por páginas
     # Promedio de reseñas en la lista de blogs
     def get_queryset(self):
         return Blog.objects.annotate(promedio_rating=Avg('reviews__rating'))
