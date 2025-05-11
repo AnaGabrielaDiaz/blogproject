@@ -1,5 +1,29 @@
 {% extends 'base.html' %}
 {% block content %}
+
+{% if blog.category %}
+  <p class="text-sm text-gray-600 dark:text-gray-400 italic">Categoría: {{ blog.category.name }}</p>
+{% endif %}
+
+
+<form method="get" class="mb-6">
+  <label for="category" class="text-sm font-medium text-gray-700 dark:text-gray-300">Filtrar por categoría:</label>
+  <select name="category" id="category"
+          class="ml-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white px-3 py-2 rounded border border-gray-300 dark:border-gray-600">
+    <option value="">Todas</option>
+    {% for cat in categories %}
+      <option value="{{ cat.id }}" {% if request.GET.category == cat.id|stringformat:"s" %}selected{% endif %}>
+        {{ cat.name }}
+      </option>
+    {% endfor %}
+  </select>
+  <button type="submit"
+          class="ml-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded transition duration-300">
+    Filtrar
+  </button>
+</form>
+
+
   <h1 class="text-3xl font-bold mb-6 text-center text-gray-900 dark:text-white">Lista de blogs</h1>
   <div class="grid gap-6">
     {% for blog in object_list %}
@@ -11,7 +35,15 @@
             <a href="{% url 'blogapp:blog_detail' blog.pk %}" class="text-blue-400 hover:text-blue-300">{{ blog.title }}</a>
           </h2>
           <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
-            by {{ blog.author.username }} - {{ blog.created_at }}
+            <span>by {{ blog.author.username }}</span>
+            <span>-</span>
+          <span>{{ blog.created_at|date:"M d, Y, g:i a" }}</span>
+          {% if blog.category %}
+            <span
+              class="ml-2 inline-block bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200 px-2 py-0.5 rounded-full text-xs font-medium">
+              {{ blog.category.name }}
+            </span>
+          {% endif %}
           </p>
           <p class="text-gray-700 dark:text-gray-300 text-sm mb-1">
             {{ blog.content|striptags|truncatechars:180 }}...
@@ -42,6 +74,26 @@
           <img src="{{ blog.featured_image.url }}" alt="Miniatura"
                class="w-32 h-24 object-cover rounded-md shadow border border-gray-700">
         {% endif %}
+      <div class="flex-1">
+        <h2 class="text-xl font-semibold mb-1">
+          <a href="{% url 'blogapp:blog_detail' blog.pk %}" class="text-blue-400 hover:text-blue-300">{{ blog.title }}</a>
+        </h2>
+        <p class="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-2 space-x-2">
+          <span>by {{ blog.author.username }}</span>
+          <span>-</span>
+          <span>{{ blog.created_at|date:"M d, Y, g:i a" }}</span>
+          {% if blog.category %}
+            <span
+              class="ml-2 inline-block bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200 px-2 py-0.5 rounded-full text-xs font-medium">
+              {{ blog.category.name }}
+            </span>
+          {% endif %}
+        </p>
+        
+        <p class="text-gray-700 dark:text-gray-300 text-sm mb-1">
+          {{ blog.content|striptags|truncatechars:180 }}...
+        </p>
+        <a href="{% url 'blogapp:blog_detail' blog.pk %}" class="text-blue-500 dark:text-blue-300 hover:underline text-sm">Leer más</a>
       </div>
     </div>
     {% empty %}
