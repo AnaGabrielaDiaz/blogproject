@@ -15,6 +15,5 @@ urlpatterns = [
     path('login/', CustomLoginView.as_view(), name='login'),
     path('blog/<int:pk>/edit/', views.BlogUpdateView.as_view(), name='edit_blog'),
     path('profile/', views.UserProfileView.as_view(), name='user_profile'),
-    path('accounts/', include('django.contrib.auth.urls')),
     path('blog/<int:pk>/delete/', views.BlogDeleteView.as_view(), name='delete_blog'),
 ]

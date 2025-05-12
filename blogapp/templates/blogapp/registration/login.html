@@ -1,5 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
+{% if messages %}
+  <div class="mb-4">
+    {% for message in messages %}
+      <div class="px-4 py-2 rounded {{ message.tags }} bg-red-100 text-red-800 border border-red-300">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
 <div class="flex justify-center items-center min-h-[60vh]">
   <div class="w-full max-w-md bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 transition-all duration-500">
     <h2 class="text-3xl font-semibold text-center mb-6 text-gray-900 dark:text-white">Iniciar sesión</h2>

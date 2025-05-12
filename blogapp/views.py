@@ -1,20 +1,30 @@
-from django.views.generic import ListView, DetailView, CreateView
-from django.urls import reverse_lazy
-from .models import Blog, Review, Comment
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.forms import UserCreationForm
-from django.shortcuts import render, redirect
-from django.contrib.auth import login
-from django.contrib.auth.views import LoginView
-from django.contrib import messages
-from django.views.generic import UpdateView
-from django.contrib.auth.mixins import UserPassesTestMixin
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import TemplateView
-from django.views.generic.edit import DeleteView
-from django.urls import reverse_lazy
-from .models import Blog, Category
 from django import forms
+from django.urls import reverse_lazy
+from .models import Blog, Review, Comment, Category
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, TemplateView
+from django.views.generic.edit import DeleteView
+from django.contrib import messages
+from django.contrib.auth import login
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.views import LoginView
+from django.shortcuts import render, redirect
+from django.core.exceptions import ValidationError
+from django.db.models import Avg
+
+
+# Registrar usuario
+def register(request):
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect("blogapp:blog_list")
+    else:
+        form = UserCreationForm()
+    return render(request, "registration/register.html", {"form": form})
+
 
 class BlogForm(forms.ModelForm):
     class Meta:
@@ -26,7 +36,16 @@ class BlogForm(forms.ModelForm):
             'featured_image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
             'category': forms.Select(attrs={'class': 'form-control'}),
         }
-from django.core.exceptions import ValidationError
+
+
+# Mensaje de credenciales incorrectas
+class CustomLoginView(LoginView):
+    template_name = 'registration/login.html'
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Usuario o contraseña incorrectos.")
+        return super().form_invalid(form)
+    
 
 class BlogDeleteView(DeleteView):
     model = Blog
@@ -63,48 +82,21 @@ class BlogUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         context['categories'] = Category.objects.all()
         return context
 
-from django.db.models import Avg
-
-# Registrar usuario
-def register(request):
-    if request.method == "POST":
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect("blogapp:blog_list")
-    else:
-        form = UserCreationForm()
-    return render(request, "registration/register.html", {"form": form})
-
-# Mensaje de credenciales incorrectas
-class CustomLoginView(LoginView):
-    template_name = 'registration/login.html'
-
-    def form_invalid(self, form):
-        messages.error(self.request, "Usuario o contraseña incorrectos.")
-        return super().form_invalid(form)
-
 # PAGINACION
-
-from django.views.generic import ListView
-from .models import Blog
-
 class BlogListView(ListView):
     model = Blog
     template_name = 'blogapp/blog_list.html'
     context_object_name = 'object_list'
     paginate_by = 3  # Cantidad de blogs por páginas
+    
     # Promedio de reseñas en la lista de blogs
     def get_queryset(self):
-        return Blog.objects.annotate(promedio_rating=Avg('reviews__rating'))
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = Blog.objects.annotate(promedio_rating=Avg('reviews__rating'))
         category_id = self.request.GET.get('category')
         if category_id:
             queryset = queryset.filter(category_id=category_id)
         return queryset
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -140,7 +132,6 @@ class BlogCreateView(LoginRequiredMixin, CreateView):
         # Paso todas las categorías para poblar el <select>
         context['categories'] = Category.objects.all()
         return context
-    
 
 class ReviewCreateView(CreateView):
     model = Review

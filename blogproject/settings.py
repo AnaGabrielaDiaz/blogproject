@@ -2,8 +2,6 @@ from pathlib import Path
 import os 
 from django.urls import reverse_lazy
 
-
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -129,8 +127,17 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 STATIC_URL = '/static/'
 
-
 LOGIN_REDIRECT_URL = reverse_lazy('blogapp:user_profile')
 LOGOUT_REDIRECT_URL = '/'
 
+from django.contrib.messages import constants as messages
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+
+MESSAGE_TAGS = {
+    messages.DEBUG: 'debug',
+    messages.INFO: 'info',
+    messages.SUCCESS: 'success',
+    messages.WARNING: 'warning',
+    messages.ERROR: 'error',
+}
 

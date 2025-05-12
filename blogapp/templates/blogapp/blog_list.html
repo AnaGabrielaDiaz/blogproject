@@ -5,7 +5,6 @@
   <p class="text-sm text-gray-600 dark:text-gray-400 italic">Categoría: {{ blog.category.name }}</p>
 {% endif %}
 
-
 <form method="get" class="mb-6">
   <label for="category" class="text-sm font-medium text-gray-700 dark:text-gray-300">Filtrar por categoría:</label>
   <select name="category" id="category"
@@ -23,109 +22,80 @@
   </button>
 </form>
 
-
   <h1 class="text-3xl font-bold mb-6 text-center text-gray-900 dark:text-white">Lista de blogs</h1>
   <div class="grid gap-6">
-    {% for blog in object_list %}
+  {% for blog in object_list %}
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 hover:shadow-xl transition-all duration-700 ease-in-out dark:text-white text-gray-900 animate-fade-in">
-      
-      <div class="flex items-start gap-4">
-        <div class="flex-1">
-          <h2 class="text-xl font-semibold mb-1">
-            <a href="{% url 'blogapp:blog_detail' blog.pk %}" class="text-blue-400 hover:text-blue-300">{{ blog.title }}</a>
-          </h2>
-          <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
-            <span>by {{ blog.author.username }}</span>
-            <span>-</span>
-          <span>{{ blog.created_at|date:"M d, Y, g:i a" }}</span>
-          {% if blog.category %}
-            <span
-              class="ml-2 inline-block bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200 px-2 py-0.5 rounded-full text-xs font-medium">
-              {{ blog.category.name }}
-            </span>
-          {% endif %}
-          </p>
-          <p class="text-gray-700 dark:text-gray-300 text-sm mb-1">
-            {{ blog.content|striptags|truncatechars:180 }}...
-          </p>
-          <a href="{% url 'blogapp:blog_detail' blog.pk %}" class="text-blue-500 dark:text-blue-300 hover:underline text-sm">Leer más</a>
-          <!-- Promedio de reseñas -->
-          {% if blog.promedio_rating %}
-            {% with blog.promedio_rating|floatformat:1 as promedio %}
-              {% with blog.promedio_rating|floatformat:0 as promedio_entero %}
-                <div class="flex items-center gap-1 mt-2">
-                  {% for i in "12345" %}
-                    {% if forloop.counter <= promedio_entero|add:"0" %}
-                      <span class="text-yellow-400 text-lg">★</span>
-                    {% else %}
-                      <span class="text-gray-300 dark:text-gray-600 text-lg">☆</span>
-                    {% endif %}
-                  {% endfor %}
-                  <span class="ml-1 text-sm text-gray-700 dark:text-gray-300">{{ promedio }}/5</span>
-                </div>
-              {% endwith %}
-            {% endwith %}
-          {% else %}
-            <p class="text-sm text-gray-400 dark:text-gray-500 mt-2">Sin reseñas aún</p>
-          {% endif %}
-        </div>
-        <!-- Imagen del blog -->
-        {% if blog.featured_image %}
-          <img src="{{ blog.featured_image.url }}" alt="Miniatura"
-               class="w-32 h-24 object-cover rounded-md shadow border border-gray-700">
+      <h2 class="text-xl font-semibold mb-1">
+        <a href="{% url 'blogapp:blog_detail' blog.pk %}" class="text-blue-400 hover:text-blue-300">{{ blog.title }}</a>
+      </h2>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+        <span>by {{ blog.author.username }}</span> -
+        <span>{{ blog.created_at|date:"M d, Y, g:i a" }}</span>
+        {% if blog.category %}
+          <span
+            class="ml-2 inline-block bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200 px-2 py-0.5 rounded-full text-xs font-medium">
+            {{ blog.category.name }}
+          </span>
         {% endif %}
-      <div class="flex-1">
-        <h2 class="text-xl font-semibold mb-1">
-          <a href="{% url 'blogapp:blog_detail' blog.pk %}" class="text-blue-400 hover:text-blue-300">{{ blog.title }}</a>
-        </h2>
-        <p class="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-2 space-x-2">
-          <span>by {{ blog.author.username }}</span>
-          <span>-</span>
-          <span>{{ blog.created_at|date:"M d, Y, g:i a" }}</span>
-          {% if blog.category %}
-            <span
-              class="ml-2 inline-block bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200 px-2 py-0.5 rounded-full text-xs font-medium">
-              {{ blog.category.name }}
-            </span>
-          {% endif %}
-        </p>
-        
-        <p class="text-gray-700 dark:text-gray-300 text-sm mb-1">
-          {{ blog.content|striptags|truncatechars:180 }}...
-        </p>
-        <a href="{% url 'blogapp:blog_detail' blog.pk %}" class="text-blue-500 dark:text-blue-300 hover:underline text-sm">Leer más</a>
-      </div>
-    </div>
-    {% empty %}
-      <p class="text-gray-500 dark:text-gray-400 text-center">No se ha publicado ningún blog.</p>
-    {% endfor %}
-  </div>
+      </p>
 
+      <p class="text-gray-700 dark:text-gray-300 text-sm mb-1">
+        {{ blog.content|striptags|truncatechars:180 }}...
+      </p>
+      <a href="{% url 'blogapp:blog_detail' blog.pk %}" class="text-blue-500 dark:text-blue-300 hover:underline text-sm">Leer más</a>
+
+      {% if blog.featured_image %}
+        <img src="{{ blog.featured_image.url }}" alt="Miniatura"
+            class="mt-4 w-full max-w-sm h-auto object-cover rounded-md shadow border border-gray-700">
+      {% endif %}
+
+      {% if blog.promedio_rating %}
+        {% with blog.promedio_rating|floatformat:1 as promedio %}
+          {% with blog.promedio_rating|floatformat:0 as promedio_entero %}
+            <div class="flex items-center gap-1 mt-2">
+              {% for i in "12345" %}
+                {% if forloop.counter <= promedio_entero|add:"0" %}
+                  <span class="text-yellow-400 text-lg">★</span>
+                {% else %}
+                  <span class="text-gray-300 dark:text-gray-600 text-lg">☆</span>
+                {% endif %}
+              {% endfor %}
+              <span class="ml-1 text-sm text-gray-700 dark:text-gray-300">{{ promedio }}/5</span>
+            </div>
+          {% endwith %}
+        {% endwith %}
+      {% else %}
+        <p class="text-sm text-gray-400 dark:text-gray-500 mt-2">Sin reseñas aún</p>
+      {% endif %}
+
+    </div>
+{% empty %}
+  <p class="text-gray-500 dark:text-gray-400 text-center">No se ha publicado ningún blog.</p>
+{% endfor %}
+
+  </div>
 
   {% if is_paginated %}
   <div class="mt-8 flex justify-center items-center flex-wrap gap-2 text-sm">
     
     {% if page_obj.has_previous %}
-      <a href="?page=1" class="px-3 py-1 border rounded hover:bg-gray-100 dark:hover:bg-gray-700">&laquo; Primero</a>
-      <a href="?page={{ page_obj.previous_page_number }}" class="px-3 py-1 border rounded hover:bg-gray-100 dark:hover:bg-gray-700">Anterior</a>
+      <a href="?page=1" class="px-3 py-1 border rounded hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-300">&laquo; Primero</a>
+      <a href="?page={{ page_obj.previous_page_number }}" class="px-3 py-1 border rounded hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-300">Anterior</a>
     {% endif %}
 
     {% for num in page_obj.paginator.page_range %}
       {% if num == page_obj.number %}
-        <span class="px-3 py-1 border rounded bg-blue-500 text-white">{{ num }}</span>
+        <span class="px-3 py-1 border rounded bg-blue-500 text-white dark:text-gray-300">{{ num }}</span>
       {% elif num >= page_obj.number|add:'-2' and num <= page_obj.number|add:'2' %}
-        <a href="?page={{ num }}" class="px-3 py-1 border rounded hover:bg-gray-100 dark:hover:bg-gray-700">{{ num }}</a>
+        <a href="?page={{ num }}" class="px-3 py-1 border rounded hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-300">{{ num }}</a>
       {% endif %}
     {% endfor %}
 
     {% if page_obj.has_next %}
-      <a href="?page={{ page_obj.next_page_number }}" class="px-3 py-1 border rounded hover:bg-gray-100 dark:hover:bg-gray-700">Siguiente</a>
-      <a href="?page={{ page_obj.paginator.num_pages }}" class="px-3 py-1 border rounded hover:bg-gray-100 dark:hover:bg-gray-700">Última &raquo;</a>
+      <a href="?page={{ page_obj.next_page_number }}" class="px-3 py-1 border rounded hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-300">Siguiente</a>
+      <a href="?page={{ page_obj.paginator.num_pages }}" class="px-3 py-1 border rounded hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-300">Última &raquo;</a>
     {% endif %}
   </div>
 {% endif %}
-
-
-
 {% endblock %}
-
