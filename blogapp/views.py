@@ -11,6 +11,8 @@ from django.contrib.auth.views import LoginView
 from django.shortcuts import render, redirect
 from django.core.exceptions import ValidationError
 from django.db.models import Avg
+from .models import Blog, Category  
+
 
 
 # Registrar usuario
@@ -86,8 +88,8 @@ class BlogUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 class BlogListView(ListView):
     model = Blog
     template_name = 'blogapp/blog_list.html'
-    context_object_name = 'object_list'
-    paginate_by = 3  # Cantidad de blogs por páginas
+    context_object_name = 'blogs'
+    paginate_by = 6  # Cantidad de blogs por páginas
     
     # Promedio de reseñas en la lista de blogs
     def get_queryset(self):
@@ -101,7 +103,9 @@ class BlogListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['categories'] = Category.objects.all()
+        context['selected_category'] = self.request.GET.get('category')
         return context
+
 
 class BlogDetailView(DetailView):
     model = Blog

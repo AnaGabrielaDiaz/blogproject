@@ -1,9 +1,14 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Registrarse | Mythiko{% endblock %}
+
+{% block hero %}{% endblock %}
 
 {% block content %}
-<div class="flex justify-center items-center min-h-[60vh]">
-  <div class="w-full max-w-md bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 transition-all duration-500">
-    <h2 class="text-3xl font-semibold text-center mb-6 text-gray-900 dark:text-white">Registrarse</h2>
+<div class="min-h-screen flex items-center justify-center bg-cover bg-center" style="background-image: url('{% static 'img/hero-bg.jpg' %}');">
+  <div class="max-w-md w-full bg-white/10 dark:bg-gray-800/10 backdrop-blur-sm p-8 rounded-lg shadow-lg">
+    <h2 class="text-3xl font-bold mb-6 text-center text-gray-900 dark:text-white">Registrarse</h2>
 
     <form method="post" class="space-y-6">
       {% csrf_token %}
@@ -11,25 +16,25 @@
 
       {% for field in form %}
         <div>
-          <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ field.label }}</label>
+          <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-900 dark:text-white">{{ field.label }}</label>
           <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" id="{{ field.id_for_label }}"
                  value="{{ field.value|default_if_none:'' }}"
-                 class="mt-1 block w-full px-4 py-2 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-400">
+                 class="mt-1 block w-full px-4 py-2 bg-white/20 dark:bg-gray-700/20 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-accentPurple placeholder-gray-800 dark:placeholder-white/80">
           {% if field.errors %}
-            <p class="text-sm text-red-500 mt-1">{{ field.errors|striptags }}</p>
+            <p class="text-sm text-red-500 dark:text-red-300 mt-1">{{ field.errors|striptags }}</p>
           {% endif %}
         </div>
       {% endfor %}
 
       <div class="pt-2">
-        <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-md transition-all">
+        <button type="submit" class="w-full bg-accentPurple hover:bg-accentHover text-white font-semibold py-2 px-4 rounded-md transition-all">
           Crear cuenta
         </button>
       </div>
     </form>
 
-    <p class="text-center mt-6 text-sm text-gray-500 dark:text-gray-400">
-      ¿Ya tenés cuenta? <a href="{% url 'login' %}" class="text-blue-500 hover:text-blue-400">Iniciar sesión</a>
+    <p class="text-center mt-6 text-sm text-gray-900 dark:text-white">
+      ¿Ya tenés cuenta? <a href="{% url 'login' %}" class="text-accentPurple hover:text-accentHover underline">Iniciar sesión</a>
     </p>
   </div>
 </div>

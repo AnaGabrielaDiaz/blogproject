@@ -6,42 +6,45 @@
 {% endblock %}
 
 {% block content %}
-  <h1 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Crear un nuevo blog</h1>
+  <div class="max-w-4xl mx-auto p-4">
+    <h1 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Crear un nuevo blog</h1>
 
-  <form method="post" enctype="multipart/form-data" class="space-y-4 transition-all duration-700 ease-in-out animate-fade-in">
-    {% csrf_token %}
+    <form method="post" enctype="multipart/form-data" class="space-y-4 transition-all duration-700 ease-in-out animate-fade-in">
+      {% csrf_token %}
 
-    <div class="space-y-2 transition-all duration-700 ease-in-out">
-      {% for field in form %}
-        {% if field.name != 'category' %}
-          <div>
-            <label for="{{ field.id_for_label }}" class="block text-sm font-medium mb-1 text-gray-900 dark:text-white">{{ field.label }}</label>
-            {{ field|add_class:"bg-white dark:bg-gray-800 text-gray-900 dark:text-white px-4 py-2 rounded-lg w-full border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" }}
-            {% if field.errors %}
-              <p class="text-red-500 text-sm">{{ field.errors|striptags }}</p>
-            {% endif %}
-          </div>
-
-          {% if field.name == 'featured_image' %}
-            {# Desplegable de categorías debajo de featured_image #}
-            <div class="mb-4">
-              <label for="id_category" class="block text-sm font-medium mb-1 text-gray-900 dark:text-white">Categoría</label>
-              <select name="category" id="id_category"
-                      class="bg-white dark:bg-gray-800 text-gray-900 dark:text-white px-4 py-2 rounded-lg w-full border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="">— Selecciona una categoría —</option>
-                {% for cat in categories %}
-                  <option value="{{ cat.id }}" {% if form.instance.category_id == cat.id %}selected{% endif %}>{{ cat.name }}</option>
-                {% endfor %}
-              </select>
-              {% if form.category.errors %}
-                <p class="text-red-500 text-sm">{{ form.category.errors.0 }}</p>
+      <div class="space-y-2 transition-all duration-700 ease-in-out">
+        {% for field in form %}
+          {% if field.name != 'category' %}
+            <div>
+              <label for="{{ field.id_for_label }}" class="block text-sm font-medium mb-1 text-gray-900 dark:text-white">{{ field.label }}</label>
+              {{ field|add_class:"bg-white dark:bg-gray-800 text-gray-900 dark:text-white px-4 py-2 rounded-lg w-full border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" }}
+              {% if field.errors %}
+                <p class="text-red-500 text-sm">{{ field.errors|striptags }}</p>
               {% endif %}
             </div>
-          {% endif %}
-        {% endif %}
-      {% endfor %}
-    </div>
 
-    <button type="submit" class="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white dark:bg-blue-600 dark:hover:bg-blue-700 rounded transition-all duration-500 ease-in-out">Publicar Blog</button>
-  </form>
+            {% if field.name == 'featured_image' %}
+              <div class="mb-4">
+                <label for="id_category" class="block text-sm font-medium mb-1 text-gray-900 dark:text-white">Categoría</label>
+                <select name="category" id="id_category"
+                        class="bg-white dark:bg-gray-800 text-gray-900 dark:text-white px-4 py-2 rounded-lg w-full border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option value="">— Selecciona una categoría —</option>
+                  {% for cat in categories %}
+                    <option value="{{ cat.id }}" {% if form.instance.category_id == cat.id %}selected{% endif %}>{{ cat.name }}</option>
+                  {% endfor %}
+                </select>
+                {% if form.category.errors %}
+                  <p class="text-red-500 text-sm">{{ form.category.errors.0 }}</p>
+                {% endif %}
+              </div>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <button type="submit" class="px-6 py-2 bg-[#9E99BF] hover:bg-[#8f89ad] text-black rounded transition-all duration-500 ease-in-out">
+        Publicar Blog
+      </button>
+    </form>
+  </div>
 {% endblock %}

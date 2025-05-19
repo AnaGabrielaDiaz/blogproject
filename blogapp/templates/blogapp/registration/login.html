@@ -1,43 +1,71 @@
-{% extends "base.html" %}
-{% block content %}
-{% if messages %}
-  <div class="mb-4">
-    {% for message in messages %}
-      <div class="px-4 py-2 rounded {{ message.tags }} bg-red-100 text-red-800 border border-red-300">
-        {{ message }}
-      </div>
-    {% endfor %}
-  </div>
-{% endif %}
+{% extends 'base.html' %}
+{% load static %}
 
-<div class="flex justify-center items-center min-h-[60vh]">
-  <div class="w-full max-w-md bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 transition-all duration-500">
-    <h2 class="text-3xl font-semibold text-center mb-6 text-gray-900 dark:text-white">Iniciar sesión</h2>
-    
+{% block title %}Iniciar Sesión | Mythiko{% endblock %}
+
+{# Ocultamos el bloque hero heredado #}
+{% block hero %}{% endblock %}
+
+{% block content %}
+<div class="w-full h-screen flex items-center justify-center bg-cover bg-center" style="background-image: url('{% static 'img/hero-bg.jpg' %}');">
+  <div class="max-w-md w-full bg-white/10 dark:bg-gray-800/10 backdrop-blur-sm p-8 rounded-lg shadow-lg">
+    <h2 class="text-3xl font-bold mb-6 text-center text-white">
+      Iniciar Sesión
+    </h2>
+
+    {% if messages %}
+      <div class="mb-4">
+        {% for message in messages %}
+          <div class="px-4 py-2 rounded {{ message.tags }} bg-red-100 text-red-800 border border-red-300">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
     <form method="post" class="space-y-6">
       {% csrf_token %}
-      
       <div>
-        <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Usuario</label>
-        <input type="text" name="username" id="username" required 
-               class="mt-1 block w-full px-4 py-2 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all" />
+        <label for="username" class="block text-sm font-medium text-white">
+          Usuario
+        </label>
+        <input
+          type="text"
+          name="username"
+          id="username"
+          required
+          class="mt-1 block w-full px-4 py-2 bg-white/20 dark:bg-gray-700/20 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-accentPurple placeholder-white/80"
+          placeholder="Tu usuario"
+        />
       </div>
-
       <div>
-        <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Contraseña</label>
-        <input type="password" name="password" id="password" required 
-               class="mt-1 block w-full px-4 py-2 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all" />
+        <label for="password" class="block text-sm font-medium text-white">
+          Contraseña
+        </label>
+        <input
+          type="password"
+          name="password"
+          id="password"
+          required
+          class="mt-1 block w-full px-4 py-2 bg-white/20 dark:bg-gray-700/20 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-accentPurple placeholder-white/80"
+          placeholder="Tu contraseña"
+        />
       </div>
-
-      <div class="flex items-center justify-between">
-        <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md transition-all">
+      <div>
+        <button
+          type="submit"
+          class="w-full py-2 px-4 bg-accentPurple hover:bg-accentHover text-white font-semibold rounded-md transition duration-300"
+        >
           Entrar
         </button>
       </div>
     </form>
 
-    <p class="text-center mt-6 text-sm text-gray-500 dark:text-gray-400">
-      ¿No tienes cuenta? <a href="{% url 'blogapp:register' %}" class="text-blue-500 hover:text-blue-400">Registrate</a>
+    <p class="mt-6 text-center text-sm text-white">
+      ¿No tienes cuenta?
+      <a href="{% url 'blogapp:register' %}" class="text-accentPurple hover:text-accentHover underline">
+        Regístrate
+      </a>
     </p>
   </div>
 </div>

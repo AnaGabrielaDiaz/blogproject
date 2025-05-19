@@ -1,16 +1,18 @@
 {% extends 'base.html' %}
 {% block content %}
 
-  <article class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-lg transition-all duration-700 ease-in-out dark:text-white text-gray-900 animate-fade-in">
-    <h1 class="text-3xl font-bold mb-2">{{ object.title }}</h1>
+  <article class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-lg transition-all duration-700 ease-in-out dark:text-white text-gray-900 animate-fade-in max-w-4xl mx-auto">
+    <h1 class="text-3xl font-bold mb-4">{{ object.title }}</h1>
     
     {% if object.featured_image %}
-      <img src="{{ object.featured_image.url }}" alt="Featured Image" class="w-full rounded-lg mb-4 shadow-md">
+      <img src="{{ object.featured_image.url }}" alt="Featured Image" class="w-full max-w-full h-auto rounded-lg mb-6 shadow-md object-contain mx-auto">
     {% endif %}
     
-    <div class="prose dark:prose-invert max-w-none mb-4">{{ object.content|safe }}</div>
+    <div class="prose dark:prose-invert max-w-none mb-6 mx-auto">
+      {{ object.content|safe }}
+    </div>
     
-    <p class="text-sm text-gray-600 dark:text-gray-500">By {{ object.author.username }} - {{ object.created_at }}</p>
+    <p class="text-sm text-gray-600 dark:text-gray-500 mb-6">By {{ object.author.username }} - {{ object.created_at }}</p>
     
     {% if user == object.author %}
       <a href="{% url 'blogapp:edit_blog' object.pk %}" class="inline-block mt-3 bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded transition-colors">
@@ -19,7 +21,7 @@
     {% endif %}
   </article>
 
-  <section class="mt-8">
+  <section class="mt-8 max-w-4xl mx-auto">
     <h2 class="text-2xl font-semibold mb-4 dark:text-gray-300">Reseñas</h2>
     {% if promedio_rating %}
       <div class="flex items-center gap-2 mb-4">
@@ -41,12 +43,11 @@
       <p class="text-gray-400 py-4">Este blog aún no tiene reseñas.</p>
     {% endif %}
     {% for review in object.reviews.all %}
-      <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg mb-4 transition-all duration-700 ease-in-out dark:text-white text-gray-900 animate-fade-in">
+      <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg mb-4 transition-all duration-700 ease-in-out dark:text-white text-gray-900 animate-fade-in max-w-4xl mx-auto">
         <p class="text-blue-700 dark:text-blue-300 font-medium">{{ review.reviewer.username }} - {{ review.rating }}/5 ⭐</p>
         <p class="text-gray-700 dark:text-gray-300">{{ review.comment }}</p>
         {% if user.is_authenticated %}
           <a href="{% url 'blogapp:add_comment' blog_pk=object.pk review_pk=review.pk %}" class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 mt-2 inline-block">Agregar comentario</a>
-        
         {% endif %}
         <ul class="mt-2 list-disc ml-6 text-gray-600 dark:text-gray-400">
           {% for comment in review.comments.all %}
@@ -58,22 +59,19 @@
       <p class="text-gray-400">No hay reseñas aún. Sé el primero en dejar una.</p>
     {% endfor %}
     {% if user.is_authenticated %}
-      <a href="{% url 'blogapp:add_review' object.pk %}" class="mt-4 inline-block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition-colors">Añadir Reseña</a>
+      <a href="{% url 'blogapp:add_review' object.pk %}" class="mt-4 inline-block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition-colors max-w-4xl mx-auto">Añadir Reseña</a>
     {% else %}
-    <p class="mt-4 text-red-500 dark:text-red-400 font-semibold">
+    <p class="mt-4 text-red-500 dark:text-red-400 font-semibold max-w-4xl mx-auto">
       Debes <a href="{% url 'login' %}?next={% url 'blogapp:add_review' object.pk %}" class="underline hover:text-red-700 dark:hover:text-red-300">iniciar sesión</a> para dejar una reseña.
     </p>
     {% endif %}
-    
   </section>
 
-<!-- Botón para volver a la lista de blogs -->
-<div class="mt-10">
-  <a href="{% url 'blogapp:blog_list' %}" class="inline-block px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">
-    ← Volver a la lista de blogs
-  </a>
-</div>
-
-
+  <!-- Botón para volver a la lista de blogs -->
+  <div class="mt-10 max-w-4xl mx-auto">
+    <a href="{% url 'blogapp:blog_list' %}" class="inline-block px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">
+      ← Volver a la lista de blogs
+    </a>
+  </div>
 
 {% endblock %}
