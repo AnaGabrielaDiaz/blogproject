@@ -21,6 +21,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'admin_interface',
+    'colorfield', 
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -31,6 +33,8 @@ INSTALLED_APPS = [
     'ckeditor',
     'widget_tweaks',
     'django_extensions',
+     # dependencia obligatoria de admin_interface
+    
 ]
 
 MIDDLEWARE = [
